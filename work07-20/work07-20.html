@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        div{
+            width: 590px;
+            height: 470px;
+            margin: 20px auto;
+            position: relative;
+        }
+        img{
+            width: 590px;
+            height: 470px;
+        }
+        .image li{
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+        ul.image li.opa{
+            opacity: 1;
+        }
+        #pre,#next{
+            width:25px;
+            height:35px;
+            padding-left: 5px;
+            border-radius: 0 15px 15px 0;
+            background:rgba(0,0,0,0.15);
+            color: rgba(255,255,255,0.8);
+            position:absolute;
+            top:200px;
+            line-height: 35px;
+        }
+        #next{
+            width:20px;
+            padding-left: 10px;
+            border-radius: 15px 0 0 15px;
+            right:0px;
+        }
+        #pre:hover, #next:hover{
+            background:rgba(0,0,0,0.5);
+        }
+        .point{
+            position: absolute;
+            left: 20px;
+            top: 430px;
+        }
+        .point li{
+            float: left;
+            margin: 5px;
+        }
+        .point li{
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+        }
+        .point li.active{
+            background: rgba(255,255,255,1);
+        }
+        .act{
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            margin-top: -3px;
+            margin-left: -3px;
+        }
+    </style>
+</head>
+<body>
+    <div id="slideshow">
+        <ul class="image" id="image">
+            <li><img src="images/img1.webp"></li>
+            <li><img src="images/img2.webp"></li>
+            <li><img src="images/img3.webp"></li>
+            <li><img src="images/img4.jpg"></li>
+            <li><img src="images/img5.webp"></li>
+            <li><img src="images/img6.webp"></li>
+            <li><img src="images/img7.webp"></li>
+            <li><img src="images/img8.webp"></li>
+        </ul> 
+        <div id="pre"><</div>
+        <div id="next">></div>
+        <ul class="point" id="point">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</body>
+<script src='js/jquery.js'></script>
+<script>
+    var index = 0;
+    var length = $('#image li').length;
+    var pointL = $('#point li').length;
+
+    $('#image li').eq(index).addClass('opa');
+    $('#point li').eq(index).addClass('active');
+
+    //自动切换
+    var timeId = setInterval(autoMove, 3000);
+    function autoMove(){
+        index ++;
+        if(index >= length)
+            index = 0;
+        changeTo(index);
+    }
+    function changeTo(){
+        $('#image li').eq(index).addClass('opa').siblings().removeClass('opa');
+        $('#point li').eq(index).addClass('active').siblings().removeClass('active');
+        var div = $("<div></div>");
+        div.addClass('act');
+        $('#point li div').remove();
+        $('#point li').eq(index).append(div);
+        
+    }
+
+    //左右按钮
+    $('#pre').click(function(){
+        index--;
+        if(index < 0)
+            index = length - 1;
+        changeTo(index);
+    })
+    $('#next').click(autoMove);
+
+    //指示点
+    $('#point li').each(function(idx){
+        $(this).hover(function(){
+            index = idx;
+            changeTo();
+            console.log(index);
+        })
+    })
+
+    // 鼠标滑过取消定时执行，移开开启定时执行
+    $('#slideshow').hover(function(){
+        clearInterval(timeId);
+    },function(){
+        timeId = setInterval(autoMove, 3000);
+    })
+</script>
+</html>
